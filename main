@@ -1,0 +1,3 @@
+#!/bin/bash
+python -u index.py 
+#stdbuf -oL -eL ./index
