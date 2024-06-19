@@ -39,14 +39,14 @@ config = cfg.getconfig()
 # base_url='https://data.exactspace.co/exactapi'
 # config["api"]["meta"]=base_url
 base_url = config["api"]["meta"]
-unitsId = os.environ.get("UNIT_ID") if os.environ.get("UNIT_ID")!=None else None
-# unitsId="628dd242c78e4c5d0f3b90cf"
-if unitsId==None:
-    print("no unit id passed")
-    exit()
+# unitsId = os.environ.get("UNIT_ID") if os.environ.get("UNIT_ID")!=None else None
+# # unitsId="628dd242c78e4c5d0f3b90cf"
+# if unitsId==None:
+#     print("no unit id passed")
+#     exit()
 
-config = cfg.getconfig()[unitsId]
-print(config)
+# config = cfg.getconfig()[unitsId]
+# print(config)
 
 ##################################get unitsId ###############################################################
 
