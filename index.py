@@ -159,6 +159,10 @@ def boxplot(df,tag,unitId,year):
     print("**********df*****************",df)
     if not df.empty:
         if tag in df.columns:
+            df[tag] = pd.to_numeric(df[tag], errors='coerce')
+
+#     Drop rows with NaN values (which were non-numeric)
+            df = df.dropna(subset=[tag])
             print(tag)
             df=df[df[tag]<99999.0]
             if not df.empty:
@@ -214,18 +218,22 @@ def boxplot(df,tag,unitId,year):
                      "tags":{"dataTagId" : tag, "period":str(year),"calculationType":"Max"}
 
                     })
-
-        #         postscylla(lst)
-            else:
-                print("no data")
-              
+            else:    
+                print("No Numeric Data")
+            
                 lst=[]
 
-
+        #         postscylla(lst)
         else:
-            print("no data")
+            print("No Tag ")
             
             lst=[]
+
+
+    else:
+        print("No Data")
+        
+        lst=[]
 
 
 
@@ -233,7 +241,7 @@ def boxplot(df,tag,unitId,year):
     #     lst=[Min,q1,med,q3,Max]
         #     except :
         #         lst=[0,0,0,0,0]
-        return lst
+    return lst
 ##################################################fetchlimits###################################################################################
 
 def fetchlimits(unitsId,tag,base_url):
@@ -381,7 +389,7 @@ def boxplot_oneyrs(unitsId,tag,base_url,eqid):
     validload='validload__'+tag
     eqid=fetchtagmeta(unitsId,tag,base_url)
     
-    if eqid !=[]:
+    if (eqid !=[]) & (eqid !=None):
         
         statetag='state__'+eqid
         taglist= [statetag,tag, validload]
@@ -436,7 +444,7 @@ def boxplot_onemonth_sevendays(unitsId,tag,base_url,eqid):
     validload='validload__'+tag
 #     eqid=fetchtagmeta(unitsId,tag,base_url)
     
-    if eqid !=[]:
+    if (eqid !=[]) & (eqid !=None):
         
         statetag='state__'+eqid
         taglist= [statetag,tag, validload]
