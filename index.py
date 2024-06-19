@@ -57,7 +57,7 @@ def getUnitsId(base_url):
     unitsId = [i['id'] for i in jjson]
     return unitsId
 
-# unitsId=getUnitsId(base_url)
+unitsId=getUnitsId(base_url)
 # sufix = unitsId_+"boxplot"
 # metric_list = [prefix + str(ids) for ids in unitIds]
 # print(metric_list)
@@ -558,33 +558,34 @@ def fetch_boxplot(unitsId,tag):
 #######################################################################################################
 def boxplot_main_fun(unitsId,base_url):
     print("Running main function")
-    tagList=getallTags(unitsId,base_url)
+    for unit in unitsId:
+        tagList=getallTags(unit,base_url)
 #     tagList=['LPG_3LAV20CY101_XQ07.OUT']
     
 #     tg=get_boxplot(unitsId,tag)
-    for tag in tagList:
-       
-        res=fetch_boxplot(unitsId,tag)
-#         print(res)
-        eqid=fetchtagmeta(unitsId,tag,base_url)
-        if res=={}:
+        for tag in tagList:
         
-        
-            boxplot_yrs(unitsId,tag,base_url,eqid) 
-            print("**********************end of years function*********************")
-            boxplot_oneyrs(unitsId,tag,base_url,eqid)
-            print("****************end of one year**********************************")
-            boxplot_onemonth_sevendays(unitsId,tag,base_url,eqid)
-            print("**************end of seven days**************************************")
-        
-        
-        else:
+            res=fetch_boxplot(unit,tag)
+    #         print(res)
+            eqid=fetchtagmeta(unit,tag,base_url)
+            if res=={}:
             
-            boxplot_onemonth_sevendays(unitsId,tag,base_url,eqid)
-            print("**************end of one month seven days**************************************")
-        
             
-    print("done posting for unitsId :",unitsId)
+                boxplot_yrs(unit,tag,base_url,eqid) 
+                print("**********************end of years function*********************")
+                boxplot_oneyrs(unit,tag,base_url,eqid)
+                print("****************end of one year**********************************")
+                boxplot_onemonth_sevendays(unit,tag,base_url,eqid)
+                print("**************end of seven days**************************************")
+            
+            
+            else:
+                
+                boxplot_onemonth_sevendays(unit,tag,base_url,eqid)
+                print("**************end of one month seven days**************************************")
+            
+                
+            print("done posting for unitsId :",unit)
    
     time.sleep(5)
     print("Main function execution complete")
