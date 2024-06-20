@@ -364,10 +364,14 @@ def boxplot_yrs(unitsId, tag, base_url, eqid):
             df["year"] = df['time'].dt.year
             
             print(f"Processing data for the year: {year}")
-            
-            bplot = removingOutliers(df, statetag, validload, unitsId, tag, base_url)
-            bplot = boxplot(bplot, tag, unitsId, year)
-            
+            if "statetag__" in df.columns:
+
+                bplot = removingOutliers(df, statetag, validload, unitsId, tag, base_url)
+                bplot = boxplot(bplot, tag, unitsId, year)
+            else:
+                statetag=0
+                bplot = removingOutliers(df, statetag, validload, unitsId, tag, base_url)
+                bplot = boxplot(bplot, tag, unitsId, year)
             print(bplot)
             postscylla(bplot)
         else:
@@ -385,7 +389,7 @@ def boxplot_yrs(unitsId, tag, base_url, eqid):
 ##################################box plot for 1 yr ,1 month, 7 days ############################################
 # @profile
 def boxplot_oneyrs(unitsId,tag,base_url,eqid):
-  
+    # dct={}
     validload='validload__'+tag
     eqid=fetchtagmeta(unitsId,tag,base_url)
     
@@ -393,11 +397,12 @@ def boxplot_oneyrs(unitsId,tag,base_url,eqid):
         
         statetag='state__'+eqid
         taglist= [statetag,tag, validload]
+        
     else:
         
         
         taglist= [tag,validload]
-    
+        
 #    
     # Format datetime object to desired string format
     endtime = datetime.datetime.now()
@@ -417,10 +422,17 @@ def boxplot_oneyrs(unitsId,tag,base_url,eqid):
         df1yr["time"]=pd.to_datetime(df1yr['time']/1000+5.5*60*60, unit='s')
         df1yr['time'] =df1yr['time'].dt.strftime('%Y-%m-%d %H:%M:%S')
         df1yr['time'] = pd.to_datetime(df1yr['time'])
+        if "state__" in df1yr.columns:
 
-        bplot1yr=removingOutliers(df1yr,statetag,validload,unitsId,tag,base_url)
-        bplot1yr=boxplot(bplot1yr,tag,unitsId,"1Y")
-        print("bplot1yr",bplot1yr)
+            bplot1yr=removingOutliers(df1yr,statetag,validload,unitsId,tag,base_url)
+            bplot1yr=boxplot(bplot1yr,tag,unitsId,"1Y")
+        else:
+            statetag=0
+            bplot1yr=removingOutliers(df1yr,statetag,validload,unitsId,tag,base_url)
+            bplot1yr=boxplot(bplot1yr,tag,unitsId,"1Y")
+            print("no statetag")
+            
+        # print("bplot1yr",bplot1yr)
 
         if bplot1yr!=[]:
 
@@ -481,15 +493,29 @@ def boxplot_onemonth_sevendays(unitsId,tag,base_url,eqid):
         df1M["time"]=pd.to_datetime(df1M['time']/1000+5.5*60*60, unit='s')
         df1M['time'] =df1M['time'].dt.strftime('%Y-%m-%d %H:%M:%S')
         df1M['time'] = pd.to_datetime(df1M['time'])
+        if "state__" in df1M.columns:
         
-        df7d=df1M[(df1M["time"]>=s7d) & (df1M["time"]<=endtime)]
-        bplot7d=removingOutliers(df7d, statetag,validload,unitsId,tag,base_url)
-        bplot7d=boxplot(bplot7d,tag,unitsId,"7d")
-     
-        bplot1M=removingOutliers(df1M, statetag,validload,unitsId,tag,base_url)
-        bplot1M=boxplot(bplot1M,tag,unitsId,"1M")
-     
+            df7d=df1M[(df1M["time"]>=s7d) & (df1M["time"]<=endtime)]
 
+            
+
+            bplot7d=removingOutliers(df7d, statetag,validload,unitsId,tag,base_url)
+            bplot7d=boxplot(bplot7d,tag,unitsId,"7d")
+        
+            bplot1M=removingOutliers(df1M, statetag,validload,unitsId,tag,base_url)
+            bplot1M=boxplot(bplot1M,tag,unitsId,"1M")
+        else:
+            statetag=0
+
+            df7d=df1M[(df1M["time"]>=s7d) & (df1M["time"]<=endtime)]
+
+            
+
+            bplot7d=removingOutliers(df7d, statetag,validload,unitsId,tag,base_url)
+            bplot7d=boxplot(bplot7d,tag,unitsId,"7d")
+        
+            bplot1M=removingOutliers(df1M, statetag,validload,unitsId,tag,base_url)
+            bplot1M=boxplot(bplot1M,tag,unitsId,"1M")
 
         if bplot1M!=[]:
 
