@@ -21,7 +21,7 @@ pipeline {
             }
         }
 // MAIN BRANCH
-        stage("Tag old image as r0") {
+        /*stage("Tag old image as r0") {
             when {
                  expression { return env.BRANCH_NAME == 'main' }
             }
@@ -32,7 +32,7 @@ pipeline {
                 sudo docker push $registry/$APP_NAME:r0
                 """
             }
-        }
+        }*/
         stage("get scm for r1"){
             when {
                  expression { return env.BRANCH_NAME == 'main' }
