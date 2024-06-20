@@ -1,11 +1,11 @@
-def deploymentStatus = [:]
+gidef deploymentStatus = [:]
 def deploymentStatusList = []
 
 pipeline {
     agent any  
     environment {
         registry = "dev.exactspace.co"
-        repo_name = "rotary-assets-condition-boxplot"
+        repo_name = "rotary-assets-condition-boxplot-daily"
         service_type = "stack"
         VERSION = "${env.BUILD_ID}"
         APP_NAME = "${repo_name}-es"
