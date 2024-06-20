@@ -1,4 +1,5 @@
-gidef deploymentStatus = [:]
+
+def deploymentStatus = [:]
 def deploymentStatusList = []
 
 pipeline {
@@ -6,7 +7,7 @@ pipeline {
     environment {
         registry = "dev.exactspace.co"
         repo_name = "rotary-asset-condition-boxplot-daily"
-        service_type = "stack"
+        service_type = "standalone"
         VERSION = "${env.BUILD_ID}"
         APP_NAME = "${repo_name}-es"
         BRANCH_NAME = "${scm.branches[0].name}"
@@ -20,7 +21,7 @@ pipeline {
             }
         }
 // MAIN BRANCH
-        /*stage("Tag old image as r0") {
+        stage("Tag old image as r0") {
             when {
                  expression { return env.BRANCH_NAME == 'main' }
             }
@@ -31,7 +32,7 @@ pipeline {
                 sudo docker push $registry/$APP_NAME:r0
                 """
             }
-        }*/
+        }
         stage("get scm for r1"){
             when {
                  expression { return env.BRANCH_NAME == 'main' }
