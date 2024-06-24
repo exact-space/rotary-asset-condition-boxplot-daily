@@ -347,8 +347,18 @@ def boxplot_yrs(unitsId, tag, base_url, eqid):
         print(f"Fetching data from {start_time} to {end_time}")
         
         # Fetch data for the entire year
-        df = getData1(taglist, {"type": 'date', "start": start_time, "end": end_time}, qr, key=None, unitId=None, aggregators=[{"name": "avg", "sampling_value": 1, "sampling_unit": "hours"}])
-        
+        # df = getData1(taglist, {"type": 'date', "start": start_time, "end": end_time}, qr, key=None, unitId=None, aggregators=[{"name": "avg", "sampling_value": 1, "sampling_unit": "hours"}])
+        count = 0
+        while count < 5:
+    # try:
+    #     getdata()
+    # except:
+        # count+=1
+            try:
+                df = getData1(taglist, {"type": 'date', "start": start_time, "end": end_time}, qr, key=None, unitId=None, aggregators=[{"name": "avg", "sampling_value": 1, "sampling_unit": "hours"}])
+            except:
+                count+=1
+                time.sleep(5)
         if not df.empty:
             df.dropna(axis=1, how='all', inplace=True)
 
@@ -415,8 +425,15 @@ def boxplot_oneyrs(unitsId,tag,base_url,eqid):
     endtime=endtime.strftime("%d-%m-%Y %H:%M")
     
 
-   
-    df1yr=getData1(taglist,{"type":'date',"start":str(start_time),"end":str(endtime)},qr,key = None,unitId = None,aggregators = [{"name":"avg","sampling_value":5,"sampling_unit":"minutes"}])
+    while count<5:
+        try:
+            df1yr=getData1(taglist,{"type":'date',"start":str(start_time),"end":str(endtime)},qr,key = None,unitId = None,aggregators = [{"name":"avg","sampling_value":5,"sampling_unit":"minutes"}])
+
+        except:
+            count+=1
+            time.sleep(5)
+    # df1yr=getData1(taglist,{"type":'date',"start":str(start_time),"end":str(endtime)},qr,key = None,unitId = None,aggregators = [{"name":"avg","sampling_value":5,"sampling_unit":"minutes"}])
+    
     if not df1yr.empty:
         df1yr.dropna(inplace=True)
         df1yr["time"]=pd.to_datetime(df1yr['time']/1000+5.5*60*60, unit='s')
@@ -485,9 +502,15 @@ def boxplot_onemonth_sevendays(unitsId,tag,base_url,eqid):
     print("sd1month",sd1month)
     print("s7d",s7d)
    
-
+    count=0
+    while count<5:
+        try:
+           df1M=getData1(taglist,{"type":'date',"start":str(sd1month),"end":str(endtime)},qr,key = None,unitId = None,aggregators = [{"name":"avg","sampling_value":1,"sampling_unit":"minutes"}])
+        except:
+            count+=1
+            time.sleep(5)
    
-    df1M=getData1(taglist,{"type":'date',"start":str(sd1month),"end":str(endtime)},qr,key = None,unitId = None,aggregators = [{"name":"avg","sampling_value":1,"sampling_unit":"minutes"}])
+    # df1M=getData1(taglist,{"type":'date',"start":str(sd1month),"end":str(endtime)},qr,key = None,unitId = None,aggregators = [{"name":"avg","sampling_value":1,"sampling_unit":"minutes"}])
     if not df1M.empty:
         df1M.dropna(inplace=True)
         df1M["time"]=pd.to_datetime(df1M['time']/1000+5.5*60*60, unit='s')
