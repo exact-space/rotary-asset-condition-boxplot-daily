@@ -597,7 +597,8 @@ def fetch_boxplot(unitsId,tag):
 #         "unit": "years"
 #       }
     }
-
+    print(url)
+    print(dd)
     res = requests.post(url=url, json=dd)
     print(res)
     if res.status_code == 200:
