@@ -599,16 +599,19 @@ def fetch_boxplot(unitsId,tag):
     }
     print(url)
     print(dd)
-    res = requests.post(url=url, json=dd)
-    print(res)
-    if res.status_code == 200:
-        resultset = json.loads(res.content)
-#     if resultset:
-        
-#         return resultset 
-        return resultset["queries"][0]["results"][0]["tags"]
-    
-    
+    try:
+        res = requests.post(url=url, json=dd)
+        print(res)
+        if res.status_code == 200:
+            resultset = json.loads(res.content)
+        #     if resultset:
+                
+        #         return resultset 
+            return resultset["queries"][0]["results"][0]["tags"]
+            
+    except:
+        pass
+
 
 
 
