@@ -1,3 +1,4 @@
+
 def deploymentStatus = [:]
 def deploymentStatusList = []
 
@@ -5,8 +6,8 @@ pipeline {
     agent any  
     environment {
         registry = "dev.exactspace.co"
-        repo_name = "rotary-assets-condition-boxplot"
-        service_type = "stack"
+        repo_name = "rotary-asset-condition-boxplot-daily"
+        service_type = "standalone"
         VERSION = "${env.BUILD_ID}"
         APP_NAME = "${repo_name}-es"
         BRANCH_NAME = "${scm.branches[0].name}"
