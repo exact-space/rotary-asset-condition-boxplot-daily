@@ -255,32 +255,47 @@ def fetchlimits(unitsId,tag,base_url):
 #     print(tagmeta[0]['benchmarkLoad'])
     loadbkt=[int(x) for x in tagmeta[0]['benchmarkLoad'].keys() if x not in["status",'end','start','lastRunHistory','lastRun'] and  tagmeta[0]['benchmarkLoad'][x]['status'] =="valid"]
     loadbkt.sort()
-    q95_values = [tagmeta[0]['benchmarkLoad'][str(key)]['q95'] for key in  loadbkt]
-    q005_values=[tagmeta[0]['benchmarkLoad'][str(key)]['q005'] for key in  loadbkt]
-#     print( q95_values)
-#     print(q005_values)
-    min_q005 = min(q005_values)
-    max_q95 = max(q95_values)
-    upperVlaue=max_q95
-#     print(min_q005,max_q95)
-    rollingSD=round(tagmeta[0]["benchmark"]["rollingSd"],2)
-#     print(rollingSD)
-    if "zeroLimit" in tagmeta[0]["benchmark"].keys():
-        dct["zeroLimit"]=tagmeta[0]["benchmark"]["zeroLimit"]
-    else:
+    try:
+        q95_values = [tagmeta[0]['benchmarkLoad'][str(key)]['q95'] for key in  loadbkt]
+        q005_values=[tagmeta[0]['benchmarkLoad'][str(key)]['q005'] for key in  loadbkt]
+    #     print( q95_values)
+    #     print(q005_values)
+        min_q005 = min(q005_values)
+        max_q95 = max(q95_values)
+        # upperVlaue=max_q95
+    #     print(min_q005,max_q95)
+        rollingSD=round(tagmeta[0]["benchmark"]["rollingSd"],2)
+    #     print(rollingSD)
+       
+        if "zeroLimit" in tagmeta[0]["benchmark"].keys():
+            dct["zeroLimit"]=tagmeta[0]["benchmark"]["zeroLimit"]
+        else:
+            dct["zeroLimit"]="-"
+       
+            
+        if "rollingSd" in tagmeta[0]["benchmark"].keys():
+            upperValue=max_q95+ 50*rollingSD
+            lowerValue=min_q005-50*rollingSD
+            dct["upperValue"]=upperValue
+            dct["lowerValue"]=lowerValue
+            
+        else:
+            dct["upperValue"]="-"
+            dct["lowerValue"]="-"
+            
+            
+        if 'limRangeHi' in tagmeta[0]["benchmark"].keys():
+            dct['limRangeHi']=tagmeta[0]['limRangeHi']
+            dct['limRangeLo'] = tagmeta[0]['limRangeLo']
+            
+            
+            
+        else:
+            dct['limRangeHi']="-"
+            dct['limRangeLo'] = "-"
+    except:
+        print("No Tagmeta")
         pass
-    if "rollingSd" in tagmeta[0]["benchmark"].keys():
-        upperValue=max_q95+ 50*rollingSD
-        lowerValue=min_q005-50*rollingSD
-        dct["upperValue"]=upperValue
-        dct["lowerValue"]=lowerValue
-    else:
-        pass
-        
-        
-    dct['limRangeHi']=tagmeta[0]['limRangeHi']
-    dct['limRangeLo'] = tagmeta[0]['limRangeLo']
-    
     print(dct)
     return dct
 
@@ -303,16 +318,45 @@ def removingOutliers(df,statetag,validload,unitsId,tag,base_url):
         zeroLimit=lim["zeroLimit"]
         upperValue=lim['upperValue']
         lowerValue=lim['lowerValue']
+
         if zeroLimit == "positive":
             df = df[df[tag] >= 0]
         elif  zeroLimit == "negative":
-            df = df[df[tag]<= 0]
+                df = df[df[tag]<= 0]
+
+        else:
+            pass
+
+        if (limRangeHi=="-") and (limRangeLo=="-"):
+            pass
+
+        elif (limRangeHi=="-") or (limRangeLo=="-"):
+            
+            pass
+        
+        elif (limRangeHi== None) and (limRangeLo==None):
+            pass
+        
+        elif (limRangeHi== None) or (limRangeLo==None):
+            pass
+        else:
+            df=df[df[tag]<=limRangeHi]
+            df=df[df[tag]>=limRangeLo]
 
 
-        df=df[df[tag]<=limRangeHi]
-        df=df[df[tag]>=limRangeLo]
-        df==df[df[tag]<=upperValue]
-        df==df[df[tag]>=lowerValue]   
+
+        if (upperValue =="-") and (lowerValue=="-"):
+            pass
+
+        elif (upperValue =="-") or (lowerValue=="-"):
+            pass
+
+        else:
+
+
+            df==df[df[tag]<=float(upperValue)]
+            df==df[df[tag]>=float(lowerValue)]   
+        #     except: 
     except:
         df=df
         
@@ -347,18 +391,18 @@ def boxplot_yrs(unitsId, tag, base_url, eqid):
         print(f"Fetching data from {start_time} to {end_time}")
         
         # Fetch data for the entire year
-        df = getData1(taglist, {"type": 'date', "start": start_time, "end": end_time}, qr, key=None, unitId=None, aggregators=[{"name": "avg", "sampling_value": 1, "sampling_unit": "hours"}])
-    #     count = 0
-    #     while count < 5:
-    # # try:
+        # df = getData1(taglist, {"type": 'date', "start": start_time, "end": end_time}, qr, key=None, unitId=None, aggregators=[{"name": "avg", "sampling_value": 1, "sampling_unit": "hours"}])
+        count = 0
+        while count < 5:
+    # try:
     # #     getdata()
     # # except:
     #     # count+=1
-    #         try:
-    #             df = getData1(taglist, {"type": 'date', "start": start_time, "end": end_time}, qr, key=None, unitId=None, aggregators=[{"name": "avg", "sampling_value": 1, "sampling_unit": "hours"}])
-    #         except:
-    #             count+=1
-    #             time.sleep(5)
+            try:
+                df = getData1(taglist, {"type": 'date', "start": start_time, "end": end_time}, qr, key=None, unitId=None, aggregators=[{"name": "avg", "sampling_value": 1, "sampling_unit": "hours"}])
+            except:
+                count+=1
+                time.sleep(5)
         if not df.empty:
             df.dropna(axis=1, how='all', inplace=True)
 
@@ -425,14 +469,14 @@ def boxplot_oneyrs(unitsId,tag,base_url,eqid):
     endtime=endtime.strftime("%d-%m-%Y %H:%M")
     
 
-    # while count<5:
-    #     try:
-    #         df1yr=getData1(taglist,{"type":'date',"start":str(start_time),"end":str(endtime)},qr,key = None,unitId = None,aggregators = [{"name":"avg","sampling_value":5,"sampling_unit":"minutes"}])
+    while count<5:
+        try:
+            df1yr=getData1(taglist,{"type":'date',"start":str(start_time),"end":str(endtime)},qr,key = None,unitId = None,aggregators = [{"name":"avg","sampling_value":5,"sampling_unit":"minutes"}])
 
-    #     except:
-    #         count+=1
-    #         time.sleep(5)
-    df1yr=getData1(taglist,{"type":'date',"start":str(start_time),"end":str(endtime)},qr,key = None,unitId = None,aggregators = [{"name":"avg","sampling_value":5,"sampling_unit":"minutes"}])
+        except:
+            count+=1
+            time.sleep(5)
+    # df1yr=getData1(taglist,{"type":'date',"start":str(start_time),"end":str(endtime)},qr,key = None,unitId = None,aggregators = [{"name":"avg","sampling_value":5,"sampling_unit":"minutes"}])
     
     if not df1yr.empty:
         df1yr.dropna(inplace=True)
@@ -502,15 +546,15 @@ def boxplot_onemonth_sevendays(unitsId,tag,base_url,eqid):
     print("sd1month",sd1month)
     print("s7d",s7d)
    
-    # count=0
-    # while count<5:
-    #     try:
-    #        df1M=getData1(taglist,{"type":'date',"start":str(sd1month),"end":str(endtime)},qr,key = None,unitId = None,aggregators = [{"name":"avg","sampling_value":1,"sampling_unit":"minutes"}])
-    #     except:
-    #         count+=1
-    #         time.sleep(5)
+    count=0
+    while count<5:
+        try:
+           df1M=getData1(taglist,{"type":'date',"start":str(sd1month),"end":str(endtime)},qr,key = None,unitId = None,aggregators = [{"name":"avg","sampling_value":1,"sampling_unit":"minutes"}])
+        except:
+            count+=1
+            time.sleep(5)
    
-    df1M=getData1(taglist,{"type":'date',"start":str(sd1month),"end":str(endtime)},qr,key = None,unitId = None,aggregators = [{"name":"avg","sampling_value":1,"sampling_unit":"minutes"}])
+    # df1M=getData1(taglist,{"type":'date',"start":str(sd1month),"end":str(endtime)},qr,key = None,unitId = None,aggregators = [{"name":"avg","sampling_value":1,"sampling_unit":"minutes"}])
     if not df1M.empty:
         df1M.dropna(inplace=True)
         df1M["time"]=pd.to_datetime(df1M['time']/1000+5.5*60*60, unit='s')
