@@ -466,7 +466,7 @@ def boxplot_oneyrs(unitsId,tag,base_url,eqid):
 
     endtime=endtime.strftime("%d-%m-%Y %H:%M")
     
-
+    count=0
     while count<5:
         try:
             df1yr=getData1(taglist,{"type":'date',"start":str(start_time),"end":str(endtime)},qr,key = None,unitId = None,aggregators = [{"name":"avg","sampling_value":5,"sampling_unit":"minutes"}])
