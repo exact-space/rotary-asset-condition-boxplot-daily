@@ -397,6 +397,7 @@ def boxplot_yrs(unitsId, tag, base_url, eqid):
    
             try:
                 df = getData1(taglist, {"type": 'date', "start": start_time, "end": end_time}, qr, key=None, unitId=None, aggregators=[{"name": "avg", "sampling_value": 1, "sampling_unit": "hours"}])
+                break
             except:
                 count+=1
                 time.sleep(5)
@@ -469,7 +470,7 @@ def boxplot_oneyrs(unitsId,tag,base_url,eqid):
     while count<5:
         try:
             df1yr=getData1(taglist,{"type":'date',"start":str(start_time),"end":str(endtime)},qr,key = None,unitId = None,aggregators = [{"name":"avg","sampling_value":5,"sampling_unit":"minutes"}])
-
+            break
         except:
             count+=1
             time.sleep(5)
@@ -547,6 +548,7 @@ def boxplot_onemonth_sevendays(unitsId,tag,base_url,eqid):
     while count<5:
         try:
            df1M=getData1(taglist,{"type":'date',"start":str(sd1month),"end":str(endtime)},qr,key = None,unitId = None,aggregators = [{"name":"avg","sampling_value":1,"sampling_unit":"minutes"}])
+           break
         except:
             count+=1
             time.sleep(5)
