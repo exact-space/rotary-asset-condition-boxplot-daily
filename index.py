@@ -566,7 +566,7 @@ def boxplot_onemonth_sevendays(unitsId,tag,base_url,eqid):
             
 
             bplot7d=removingOutliers(df7d, statetag,validload,unitsId,tag,base_url)
-            bplot7d=boxplot(bplot7d,tag,unitsId,"7d")
+            bplot7d=boxplot(bplot7d,tag,unitsId,"7D")
         
             bplot1M=removingOutliers(df1M, statetag,validload,unitsId,tag,base_url)
             bplot1M=boxplot(bplot1M,tag,unitsId,"1M")
@@ -578,7 +578,7 @@ def boxplot_onemonth_sevendays(unitsId,tag,base_url,eqid):
             
 
             bplot7d=removingOutliers(df7d, statetag,validload,unitsId,tag,base_url)
-            bplot7d=boxplot(bplot7d,tag,unitsId,"7d")
+            bplot7d=boxplot(bplot7d,tag,unitsId,"7D")
         
             bplot1M=removingOutliers(df1M, statetag,validload,unitsId,tag,base_url)
             bplot1M=boxplot(bplot1M,tag,unitsId,"1M")
